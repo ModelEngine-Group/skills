@@ -1,0 +1,58 @@
+# FusionCompute 配置
+fc_ip: 192.168.1.100
+cpu: 4
+memory: 8192  # 单位：MB
+X-Auth-User: gmsysman
+X-Auth-Key: PASSWORD
+site_id: ABCDE
+vm_id: i00001
+gateway: "192.168.1.1"
+netmask: "255.255.255.0"
+# 任务超时时间（秒），默认 600 = 10 分钟
+task_timeout: 600
+
+# Kafka 配置（将传输到虚拟机）
+kafka:
+  bootstrap_servers: "192.168.1.100:9092"
+  sasl_username: "producer"
+  sasl_password: "producerPwd"
+  security_protocol: "SASL_PLAINTEXT"
+  sasl_mechanism: "PLAIN"
+
+# SSH 配置（用于连接虚拟机传输配置）
+ssh:
+  username: "root"
+  password: "VM_PASSWORD"
+  port: 22
+  # SSH 连接超时（秒）
+  connect_timeout: 300
+  # 等待 VM SSH 就绪的最大时间（秒）
+  ready_timeout: 300
+
+# 配置文件传输设置
+config_transfer:
+  # 是否启用配置传输
+  enabled: true
+  # 目标路径
+  remote_path: "/opt/nexent/config"
+  # 配置文件名
+  config_filename: "agent_config.yaml"
+
+# PostgreSQL 配置（用于从数据库获取模型配置）
+postgres:
+  _host: "nexent-postgresql"
+  _port: 5432
+  _user: "root"
+  # password 优先从环境变量 NEXENT_POSTGRES_PASSWORD 获取，也可在此配置
+  # password: ""
+  _database: "nexent"
+
+# 模型同步配置
+model_sync:
+  # 是否启用模型配置同步
+  enabled: true
+  # VM 上的 openclaw.json 路径
+  openclaw_config_path: "/root/.openclaw/openclaw.json"
+  # 要同步的模型类型
+  model_types:
+    - "llm"
