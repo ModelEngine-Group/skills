@@ -863,9 +863,9 @@ def sync_model_config_to_vm(
         for model in provider_config["models"]:
             existing_config["agents"]["models"][f"{provider_name}/{model['id']}"] = {}
 
-    existing_config["agents"]["model"]["primary"] = existing_config["agents"][
-        "models"
-    ].keys()[0]
+    existing_config["agents"]["model"]["primary"] = next(
+        iter(existing_config["agents"]["models"]), None
+    )
 
     if vm_ip:
         if "gateway" not in existing_config:
