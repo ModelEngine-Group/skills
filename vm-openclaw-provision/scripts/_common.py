@@ -784,7 +784,7 @@ def transform_nexent_to_openclaw(nexent_models: List[Dict[str, Any]]) -> Dict[st
     for model in nexent_models:
         model_factory = model.get("model_factory", "openai").lower()
         provider_name = model_factory
-        if provider_name == "OpenAI-API-Compatible":
+        if provider_name == "openai-api-compatible":
             parsed_url = urlparse(model.get("base_url")).hostname
             provider_name = parsed_url if parsed_url else "openai"
 
@@ -851,20 +851,20 @@ def sync_model_config_to_vm(
         existing_config["agents"] = {}
     if "defaults" not in existing_config["agents"]:
         existing_config["agents"]["defaults"] = {}
-    if "model" not in existing_config["agents"]:
-        existing_config["agents"]["model"] = {}
-    if "models" not in existing_config["agents"]:
-        existing_config["agents"]["models"] = {}
+    if "model" not in existing_config["agents"]["defaults"]:
+        existing_config["agents"]["defaults"]["model"] = {}
+    if "models" not in existing_config["agents"]["defaults"]:
+        existing_config["agents"]["defaults"]["models"] = {}
 
     for provider_name, provider_config in new_model_config["models"][
         "providers"
     ].items():
         existing_config["models"]["providers"][provider_name] = provider_config
         for model in provider_config["models"]:
-            existing_config["agents"]["models"][f"{provider_name}/{model['id']}"] = {}
+            existing_config["agents"]["defaults"]["models"][f"{provider_name}/{model['id']}"] = {}
 
-    existing_config["agents"]["model"]["primary"] = next(
-        iter(existing_config["agents"]["models"]), None
+    existing_config["agents"]["defaults"]["model"]["primary"] = next(
+        iter(existing_config["agents"]["defaults"]["models"]), None
     )
 
     if vm_ip:
